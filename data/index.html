@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="Geoff Webster">
+  <meta name="description" content="Preamplifier Remote Control with WebSocket">
+  <title>Pre-amp controller</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="index.css">
+  <script src="index.js"></script>
+</head>
+
+<body>
+  <div class="panel">
+    <h1>ESP32/TFT Pre-amp controller</h1>
+    <div id="source">%SOURCE%</div>
+    <button id="ipSelect">Source select</button>
+    <button id="volup">Vol Up</button>
+    <div id="volume" class=%STATE1%>%VOLUME%</div>
+    <div id="muted" class=%STATE2%>Muted</div>
+    <button id="voldown">Vol Down</button>
+    <button id="mute">Mute</button>
+  </div>
+</body>
+
+</html>

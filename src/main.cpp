@@ -274,6 +274,14 @@ void RC5Update()
   // Poll for new RC5 command
   if (rc5.read(&toggle, &address, &command))
   {
+    /* For Debug
+    Serial.print("a:");
+    Serial.print(address);
+    Serial.print(" c:");
+    Serial.print(command);
+    Serial.print(" t:");
+    Serial.println(toggle);*/
+    
     if (address == 0x10) // standard system address for preamplifier
     {
       switch (command)

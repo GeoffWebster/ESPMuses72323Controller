@@ -25,5 +25,6 @@ Interfacing with the TFT display, source selector, IR decoder, rotary encoder/sw
 * RC5    https://github.com/guyc/RC5
 * ESP32RotaryEncoder (PlatformIO libdeps value = maffooclock/ESP32RotaryEncoder@^1.1.0)
 * MCP23S08 SPI bus expander for source selector (PlatformIO libdeps value = robtillaart/MCP23S08@^0.4.0)
+* MUSES72323    https://github.com/GeoffWebster/Muses72323
 
-The library Code for the MUSE72323 is present within the lib\Muses72323 folder and provides a MUSES72323 object constructer,  together with Muses72323write, Muses72323Mute and other control functions. This library is an adaptation of the MUSES72320 libray by Christoffer Hjalmarsson This library can be found [here](https://github.com/qhris/Muses72320).
+The MUSES72323 library is an adaptation of the MUSES72320 libray by Christoffer Hjalmarsson (which can be found [here](https://github.com/qhris/Muses72320) ).

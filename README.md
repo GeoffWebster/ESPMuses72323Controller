@@ -16,12 +16,12 @@ An Infra-red receiver module (TSOP4836) provides remote control of volume level,
 
 The MUSES72323 stereo digital volume control provides independently programmable gain of each channel from -111.75dB to 0dB together with mute. Communication between the ESP32 and the MUSE72323 is via an SPI bus.
 
-The 320x240 TFT display with an SPI interface provides visual data for source input selected, Attenuator setting (-111.75dB to 0dB) and mute status.
+The 256x64 OLED display with an SPI interface provides visual data for source input selected, Attenuator setting (-111.75dB to 0dB) and mute status.
 
 Code Libraries
 =================
 Interfacing with the TFT display, source selector, IR decoder, rotary encoder/switch, WiFi and NTP uses shared libraries. These are
-* TFT_eSPI (PlatformIO libdeps value = bodmer/TFT_eSPI@^2.3.70)
+* U8G2 (PlatformIO libdeps value = olikraus/U8g2@^2.36.2)
 * RC5    https://github.com/guyc/RC5
 * ESP32RotaryEncoder (PlatformIO libdeps value = maffooclock/ESP32RotaryEncoder@^1.1.0)
 * MCP23S08 SPI bus expander for source selector (PlatformIO libdeps value = robtillaart/MCP23S08@^0.4.0)

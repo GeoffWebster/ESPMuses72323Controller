@@ -11,15 +11,14 @@ Initial version 1.0 July 2024
 #include <Arduino.h>
 #include <Preferences.h>
 #include <SPI.h>
-#include <TFT_eSPI.h> // Hardware-specific library
+#include <u8g2lib.h> // Hardware-specific library
 #include <RC5.h>
 #include <Muses72323.h> // Hardware-specific library
 #include <ESP32RotaryEncoder.h>
 #include <MCP23S08.h> // Hardware-specific library
-#include "Free_Fonts.h" // Include the Free fonts header file
 
 // Current software
-#define softTitle1 "ESP32/TFT"
+#define softTitle1 "ESP32/OLED"
 #define softTitle2 "Muses72323 Controller"
 // version number
 #define VERSION_NUM "1.0"
@@ -45,7 +44,9 @@ Preferences preferences;
 // 23S08 Construct
 MCP23S08 MCP(10); //  HW SPI address 0x00, CS GPIO10
 
-TFT_eSPI tft = TFT_eSPI(); // Invoke custom library
+//Display Construct
+//TFT_eSPI tft = TFT_eSPI(); // Invoke custom library
+U8G2_SSD1322_NHD_256X64_1_4W_HW_SPI u8g2(U8G2_R0, /* cs=*/ 5, /* dc=*/ 26, /* reset=*/ 15);	// Enable U8G2_16BIT in u8g2.h
 
 // define IR input
 unsigned int IR_PIN = 27;
@@ -208,18 +209,10 @@ void setVolume()
   Muses.setVolume(volume, volume);
   preferences.putInt("VOLUME", volume);
   // display volume setting
-  if (!backlight)
-  {
-    backlight = ACTIVE;
-    digitalWrite(TFT_BL, HIGH); // Turn on backlight
-  }
   float atten = ((float)volume / 4);
   sprintf(buffer1, "  %.2fdB  ", atten);
-  tft.setTextSize(2);
-  tft.setFreeFont(FSS18);
-  tft.drawString(buffer1, 150, 120, 1);
-  tft.setTextSize(1);
-  tft.setFreeFont(FSS24);
+  u8g2.drawStr(0,15,buffer1);	// write something to the internal memory
+  u8g2.sendBuffer();					// transfer internal memory to the display
 }
 
 void sourceUpdate()
@@ -251,11 +244,6 @@ void sourceUpdate()
     else
     {
       source = 4;
-    }
-    if (!backlight)
-    {
-      backlight = ACTIVE;
-      digitalWrite(TFT_BL, HIGH); // Turn on backlight
     }
     setIO();
     // Set flag back to false so we can watch for the next move
@@ -290,10 +278,6 @@ void RC5Update()
         // Phono
         if ((oldtoggle != toggle))
         {
-          if (!backlight)
-          {
-            unMute(); // unmute output
-          }
           oldsource = source;
           source = 1;
           setIO();
@@ -303,10 +287,6 @@ void RC5Update()
         // Tuner
         if ((oldtoggle != toggle))
         {
-          if (!backlight)
-          {
-            unMute(); // unmute output
-          }
           oldsource = source;
           source = 4;
           setIO();
@@ -316,10 +296,6 @@ void RC5Update()
         // CD
         if ((oldtoggle != toggle))
         {
-          if (!backlight)
-          {
-            unMute(); // unmute output
-          }
           oldsource = source;
           source = 3;
           setIO();
@@ -329,10 +305,6 @@ void RC5Update()
         // Media
         if ((oldtoggle != toggle))
         {
-          if (!backlight)
-          {
-            unMute(); // unmute output
-          }
           oldsource = source;
           source = 2;
           setIO();
@@ -369,7 +341,7 @@ void RC5Update()
           setVolume();
         }
         break;
-      case 59:
+/*      case 59:
         // Display Toggle
         if ((oldtoggle != toggle))
         {
@@ -387,6 +359,7 @@ void RC5Update()
           }
         }
         break;
+        */
       default:
         break;
       }
@@ -413,11 +386,6 @@ void RC5Update()
 
 void unMute()
 {
-  if (!backlight)
-  {
-    backlight = ACTIVE;
-    digitalWrite(TFT_BL, HIGH);
-  }
   isMuted = 0;
   //  set volume
   setVolume();
@@ -429,11 +397,8 @@ void mute()
 {
   isMuted = 1;
   Muses.mute();
-  tft.setTextSize(2);
-  tft.setFreeFont(FSS18);
-  tft.drawString("    Muted    ", 160, 120, 1);
-  tft.setTextSize(1);
-  tft.setFreeFont(FSS24);
+  u8g2.drawStr(0, 15,"    Muted    ");
+  u8g2.sendBuffer();					// transfer internal memory to the display
 }
 
 void toggleMute()
@@ -474,17 +439,11 @@ void setIO()
   preferences.putUInt("SOURCE", source);
   if (isMuted)
   {
-    if (!backlight)
-    {
-      backlight = ACTIVE;
-      digitalWrite(TFT_BL, HIGH);
-    }
-    isMuted = 0;
-    tft.fillScreen(TFT_WHITE);
     // set volume
     setVolume();
   }
-  tft.drawString(inputName[source - 1], 150, 200, 1);
+  u8g2.drawStr(0,45,inputName[source - 1]);
+  u8g2.sendBuffer();
 }
 
 // This section of code runs only once at start-up.
@@ -509,25 +468,19 @@ void setup()
   // This is where the rotary inputs are configured and the interrupts get attached
   rotaryEncoder.begin();
 
-  // Initialise the TFT screen
-  tft.init();
-  tft.setRotation(1);
-
-  // Set text datum to middle centre
-  tft.setTextDatum(MC_DATUM);
-  tft.setFreeFont(FSS18);
-
-  // Clear the screen
-  tft.fillScreen(TFT_WHITE);
-
+  // Initialise the screen
+  u8g2.begin();
+  u8g2.clearBuffer();					// clear the internal memory
+  u8g2.setFont(u8g2_font_ncenB14_tr);	// choose a suitable font
   // show software version briefly in display
-  tft.setTextColor(TFT_BLUE, TFT_WHITE);
-  tft.drawString(softTitle1, 160, 80, 1);
-  tft.drawString(softTitle2, 160, 120, 1);
-  tft.drawString("SW ver " VERSION_NUM, 160, 160, 1);
+  u8g2.drawStr(0,15,softTitle1);	// write something to the internal memory
+  u8g2.drawStr(0,30,softTitle2);
+  u8g2.drawStr(0, 45,"SW ver " VERSION_NUM);
+  u8g2.sendBuffer();					// transfer internal memory to the display
   delay(2000);
-  tft.setFreeFont(FSS24);
-  tft.fillScreen(TFT_WHITE);
+  // Clear screen
+  u8g2.clearBuffer();					// clear the internal memory
+  u8g2.sendBuffer();					// transfer internal memory to the display
 
   // This initialises the Source select pins as outputs, all deselected (i.e. o/p=low)
   MCP.begin();

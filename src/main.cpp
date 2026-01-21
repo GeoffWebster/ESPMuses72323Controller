@@ -58,7 +58,7 @@ const int s_select_72323 = 16;
 static const byte MUSES_ADDRESS = 0;
 
 // preAmp construct
-static Muses72323 Muses(MUSES_ADDRESS, s_select_72323); // muses chip address (usually 0), slave select pin0;
+static Muses72323 Muses(s_select_72323, MUSES_ADDRESS); // slave select pin, muses chip address (usually 0);
 
 // define encoder pins
 const uint8_t DI_ENCODER_A = 33;

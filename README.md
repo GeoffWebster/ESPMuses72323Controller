@@ -8,7 +8,7 @@ This is an application for controlling a Putzeys / Muses72323 preamplifier. Item
 *  Visual display of above settings
 *  Storage of current settings
 
-An ESP32-DevKitC V4 interfaces through a motherboard to the on-board rotary encoder, IR receiver and 320x240 TFT display. External interfaces connect to a source select relay board and balanced digital volume controller / preamplifier board (based on Bruno Putzeys balanced pre-amp with an integrated MAS6116 digital volume control chip).
+An ESP32-DevKitC V4 interfaces through a motherboard to the on-board rotary encoder, IR receiver and 320x240 TFT display. External interfaces connect to a source select relay board and balanced digital volume controller / preamplifier board (based on Bruno Putzeys balanced pre-amp with an integrated MUSES72323 digital volume control chip).
 
 The Quadrature rotary encoder/switch (PEC11R) provides control of the volume as the default mode. Pressing the encoder shaft button switches over to SOURCE SELECT mode and this remains as the active mode till rotary encoder turning is inactive for longer than the TIME_EXITSELECT value (in seconds).
 
